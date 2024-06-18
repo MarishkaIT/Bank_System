@@ -2,6 +2,7 @@ package com.bank.bank_system.entity;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 public class Client {
