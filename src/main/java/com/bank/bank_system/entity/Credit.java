@@ -1,13 +1,13 @@
 package com.bank.bank_system.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import lombok.Data;
+
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
+@Data
 public class Credit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,9 +15,14 @@ public class Credit {
 
     private Long clientId;
 
-    private BigDecimal amount;
+    private Double amount;
 
+    @Enumerated(EnumType.STRING)
     private CreditType creditType;
+
+    private Double interestRate;
+
+    private Integer term;
 
     private Date creditDate;
 }
