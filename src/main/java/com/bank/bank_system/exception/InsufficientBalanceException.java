@@ -5,7 +5,7 @@ public class InsufficientBalanceException extends RuntimeException {
         super("Insufficient balance in account " + accountId + " to withdraw " + amount);
     }
 
-    public InsufficientBalanceException(String message) {
-        super(message);
+    public InsufficientBalanceException(String messages) {
+        super(messages);
     }
 }
