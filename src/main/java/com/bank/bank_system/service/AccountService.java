@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AccountService {
@@ -54,23 +55,33 @@ public class AccountService {
                 .orElseThrow(()-> new AccountNotFoundException("Account not found!"));
     }
 
-    public void withdraw(Long accountId, BigDecimal amount) {
+    public void withdraw(Long accountId, Double amount) {
         Account account = getAccount(accountId);
 
         if (account.getBalance().compareTo(amount) < 0) {
             throw new InsufficientBalanceException(accountId, amount);
         }
-        account.setBalance(account.getBalance().subtract(amount));
+        account.setBalance(account.getBalance());
         accountRepository.save(account);
     }
 
-    public void deposit(Long accountId, BigDecimal amount) {
+    public void deposit(Long accountId, Double amount) {
         Account account = getAccount(accountId);
-        account.setBalance(account.getBalance().add(amount));
+        account.setBalance(account.getBalance());
         accountRepository.save(account);
     }
-     public void transfer(Long fromAccountId, Long toAccountId, BigDecimal amount) {
+     public void transfer(Long fromAccountId, Long toAccountId, Double amount) {
         withdraw(fromAccountId, amount);
         deposit(toAccountId, amount);
+     }
+
+     @Transactional
+     public void updateRecipientAccount(long recipientAccountId, BigDecimal amount) {
+        Account recipientAccount = accountRepository.findById(recipientAccountId)
+                .orElseThrow(() -> new AccountNotFoundException("Recipient account not found!"));
+
+        recipientAccount.setBalance(recipientAccount.getBalance());
+        accountRepository.save(recipientAccount);
+
      }
 }
