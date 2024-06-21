@@ -1,13 +1,20 @@
 package com.bank.bank_system.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.Date;
 
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,9 +22,17 @@ public class Transaction {
 
     private Long accountId;
 
-    private BigDecimal amount;
+    private Double amount;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private TransactionType transactionType;
 
-    private Date transactionDate;
+    @ManyToOne
+    @JoinColumn(name = "account_id")
+    private Account account;
+
+    private Instant transactionDate;
+
+
 }
