@@ -3,7 +3,6 @@ package com.bank.bank_system.entity;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
