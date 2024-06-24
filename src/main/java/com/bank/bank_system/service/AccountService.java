@@ -7,21 +7,27 @@ import com.bank.bank_system.exception.ClientNotFoundException;
 import com.bank.bank_system.exception.InsufficientBalanceException;
 import com.bank.bank_system.repository.AccountRepository;
 import com.bank.bank_system.repository.ClientRepository;
+import com.zaxxer.hikari.HikariDataSource;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class AccountService {
     private AccountRepository accountRepository;
 
     private ClientRepository clientRepository;
 
-    @Transactional
     public Account createClientAccount(Long clientId, Account account) {
         Client client = clientRepository.findById(clientId)
                 .orElseThrow(() -> new ClientNotFoundException("Client not found!"));
@@ -50,38 +56,61 @@ public class AccountService {
         accountRepository.deleteById(accountId);
     }
 
-    public Account getAccountById(Long accountId) {
-        return accountRepository.findById(accountId)
-                .orElseThrow(()-> new AccountNotFoundException("Account not found!"));
-    }
 
-    public void withdraw(Long accountId, Double amount) {
+    public void withdraw(Long accountId, BigDecimal amount) {
         Account account = getAccount(accountId);
 
         if (account.getBalance().compareTo(amount) < 0) {
             throw new InsufficientBalanceException(accountId, amount);
         }
-        account.setBalance(account.getBalance());
+        updateBalance(account, amount.negate());
+    }
+
+    private void updateBalance(Account account, BigDecimal amount) {
+        account.setBalance(account.getBalance().add(amount));
         accountRepository.save(account);
     }
 
-    public void deposit(Long accountId, Double amount) {
+    public void deposit(Long accountId, BigDecimal amount) {
         Account account = getAccount(accountId);
-        account.setBalance(account.getBalance());
-        accountRepository.save(account);
+        updateBalance(account, amount);
     }
-     public void transfer(Long fromAccountId, Long toAccountId, Double amount) {
-        withdraw(fromAccountId, amount);
-        deposit(toAccountId, amount);
+     public void transfer(Long fromAccountId, Long toAccountId, BigDecimal amount) {
+        Account fromAccount = getAccount(fromAccountId);
+        Account toAccount = getAccount(toAccountId);
+
+        if (fromAccount == null || toAccount == null) {
+            throw new NullPointerException("Account not found!");
+        }
+        if (fromAccount.getBalance().compareTo(amount) < 0) {
+            throw new InsufficientBalanceException("Insufficient balance in from account");
+        }
+        try {
+            transactional(() -> {
+                updateBalance(fromAccount, amount.negate());
+                updateBalance(toAccount, amount);
+            });
+        } catch (Exception exception) {
+            log.error("Error during transfer", exception);
+        }
      }
 
-     @Transactional
-     public void updateRecipientAccount(long recipientAccountId, BigDecimal amount) {
-        Account recipientAccount = accountRepository.findById(recipientAccountId)
-                .orElseThrow(() -> new AccountNotFoundException("Recipient account not found!"));
+     private void transactional(Runnable operation) {
+        try {
+            operation.run();
+        } catch (Exception e) {
+            rollbackTransaction();
+            throw e;
+        }
+     }
 
-        recipientAccount.setBalance(recipientAccount.getBalance());
-        accountRepository.save(recipientAccount);
-
+     private void rollbackTransaction() {
+         JdbcTemplate jdbcTemplate = new JdbcTemplate();
+         try {
+             jdbcTemplate.execute("ROLLBACK");
+             System.out.println("Transaction rolled back successfully.");
+         } catch (DataAccessException e) {
+             System.out.println("Error rolling back transaction: " + e.getMessage());
+         }
      }
 }
