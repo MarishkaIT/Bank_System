@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.Instant;
 
 @Entity
@@ -33,4 +34,11 @@ public class Transaction {
     private Instant transactionDate;
 
 
+    public Transaction(Long accountId, BigDecimal amount, TransactionType transactionType) {
+
+    }
+
+    public Transaction(Long fromAccountId, Long toAccountId, BigDecimal amount) {
+
+    }
 }
