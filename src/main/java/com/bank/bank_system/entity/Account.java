@@ -1,6 +1,5 @@
 package com.bank.bank_system.entity;
 
-import com.bank.bank_system.dto.ClientDto;
 import lombok.Data;
 
 import javax.persistence.*;
