@@ -14,7 +14,7 @@ import java.util.List;
 public class PaymentService {
     PaymentRepository paymentRepository;
 
-    private List<PaymentProcessor> paymentProcessors;
+    List<PaymentProcessor> paymentProcessors;
 
     public void mikePayment(Payment payment){
         validatePayment(payment);
