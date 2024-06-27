@@ -1,20 +1,14 @@
 package com.bank.bank_system.service;
 
-import com.bank.bank_system.entity.Account;
 import com.bank.bank_system.entity.Transaction;
 import com.bank.bank_system.entity.TransactionType;
-import com.bank.bank_system.exception.InsufficientBalanceException;
 import com.bank.bank_system.exception.NotFoundTransactionException;
-import com.bank.bank_system.repository.AccountRepository;
 import com.bank.bank_system.repository.TransactionRepository;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.Date;
 import java.util.List;
-
-import static org.springframework.data.crossstore.ChangeSetPersister.*;
 
 @Service
 public class TransactionService {
@@ -24,7 +18,7 @@ public class TransactionService {
     AccountService accountService;
 
 
-    public Transaction createTransaction(TransactionType type, double amount) {
+    public Transaction createTransaction(TransactionType type, BigDecimal amount) {
         Transaction transaction = Transaction.builder()
                 .transactionType(type)
                 .amount(amount)

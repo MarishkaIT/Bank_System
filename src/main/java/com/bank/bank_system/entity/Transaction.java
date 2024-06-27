@@ -19,9 +19,7 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long accountId;
-
-    private Double amount;
+    private BigDecimal amount;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -34,11 +32,15 @@ public class Transaction {
     private Instant transactionDate;
 
 
-    public Transaction(Long accountId, BigDecimal amount, TransactionType transactionType) {
 
-    }
 
     public Transaction(Long fromAccountId, Long toAccountId, BigDecimal amount) {
 
+    }
+
+    public Transaction(Account account, BigDecimal amount, TransactionType transactionType) {
+        this.account = account;
+        this.amount = amount;
+        this.transactionType = transactionType;
     }
 }
