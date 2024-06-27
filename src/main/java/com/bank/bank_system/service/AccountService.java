@@ -67,7 +67,7 @@ public class AccountService {
         }
         account.setBalance(account.getBalance().subtract(amount));
         accountRepository.save(account);
-        return new Transaction(accountId, amount, TransactionType.WITHDRAWAL);
+        return new Transaction(account, amount, TransactionType.WITHDRAWAL);
     }
 
     private void updateBalance(Account account, BigDecimal amount) {
@@ -80,7 +80,7 @@ public class AccountService {
         Account account = getAccount(accountId);
         account.setBalance(account.getBalance().add(amount));
         accountRepository.save(account);
-        return new Transaction(accountId, amount, TransactionType.DEPOSIT);
+        return new Transaction(account, amount, TransactionType.DEPOSIT);
     }
     @Transactional
      public Transaction transfer(Long fromAccountId, Long toAccountId, BigDecimal amount) {
