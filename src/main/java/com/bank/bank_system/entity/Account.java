@@ -1,6 +1,8 @@
 package com.bank.bank_system.entity;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.Valid;
@@ -10,6 +12,7 @@ import java.util.List;
 
 @Entity
 @Data
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,10 +31,8 @@ public class Account {
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Transaction> transactions;
 
-    @OneToMany(mappedBy = "client")
+    @ManyToOne
+    @JoinColumn(name = "client_id")
     private Client client;
 
-    public void setClient(@Valid @NotNull Client client) {
-        this.client = client;
-    }
 }

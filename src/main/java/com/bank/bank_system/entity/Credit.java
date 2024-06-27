@@ -13,7 +13,9 @@ public class Credit {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long clientId;
+    @ManyToOne
+    @JoinColumn(name = "client_id")
+    private Client client;
 
     private Double amount;
 
@@ -24,5 +26,6 @@ public class Credit {
 
     private Integer term;
 
+    @Temporal(TemporalType.DATE)
     private Date creditDate;
 }
