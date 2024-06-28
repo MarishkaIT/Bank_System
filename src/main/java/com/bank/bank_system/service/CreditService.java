@@ -32,8 +32,8 @@ public class CreditService {
         creditRepository.deleteById(id);
     }
 
-    public List<Credit> getCreditsByType(CreditType type) {
-        return creditRepository.findByType(type);
+    public List<Credit> getCreditsByType(CreditType creditType) {
+        return creditRepository.findByCreditType(creditType);
     }
 
     public double calculateMonthlyPayment(Credit credit) {

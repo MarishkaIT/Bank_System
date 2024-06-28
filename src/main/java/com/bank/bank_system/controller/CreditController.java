@@ -5,11 +5,9 @@ import com.bank.bank_system.entity.CreditType;
 import com.bank.bank_system.service.CreditService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.persistence.CollectionTable;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,13 +54,13 @@ public class CreditController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/type/{type}")
-    public ResponseEntity<List<Credit>> getCreditsByType(@PathVariable CreditType type) {
-        List<Credit> credits = creditService.getCreditsByType(type);
+    @GetMapping("/type/{creditType}")
+    public ResponseEntity<List<Credit>> getCreditsByType(@PathVariable CreditType creditType) {
+        List<Credit> credits = creditService.getCreditsByType(creditType);
         return ResponseEntity.ok(credits);
     }
 
-    @GetMapping("/{id}/monthly-paymen")
+    @GetMapping("/{id}/monthly-payment")
     public ResponseEntity<Double> calculateMonthlyPayment(@PathVariable Long id) {
         Credit credit = creditService.getCreditById(id);
         if (credit != null) {
