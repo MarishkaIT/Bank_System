@@ -13,12 +13,12 @@ import java.util.List;
 @Entity
 @Data
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
+@Table(name = "account")
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long clientId;
 
     @Column(unique = true)
     private String accountNumber;

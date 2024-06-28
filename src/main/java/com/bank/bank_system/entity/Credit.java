@@ -8,6 +8,7 @@ import java.util.Date;
 
 @Entity
 @Data
+@Table(name = "credits")
 public class Credit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,6 +21,7 @@ public class Credit {
     private Double amount;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "credit_type")
     private CreditType creditType;
 
     private Double interestRate;

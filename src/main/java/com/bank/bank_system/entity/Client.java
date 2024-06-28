@@ -10,6 +10,7 @@ import java.util.List;
 @Entity
 @Data
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
+@Table(name = "client")
 public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,5 +30,6 @@ public class Client {
 
     private String password;
 
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Account> accounts;
 }
