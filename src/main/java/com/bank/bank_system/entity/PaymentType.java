@@ -2,7 +2,6 @@ package com.bank.bank_system.entity;
 
 import lombok.Data;
 
-@Data
 public enum PaymentType {
     CARD("Карта"),
     TRANSFER("Перевод"),
