@@ -5,12 +5,17 @@ import com.bank.bank_system.entity.Client;
 import com.bank.bank_system.exception.ClientNotFoundException;
 import com.bank.bank_system.repository.AccountRepository;
 import com.bank.bank_system.repository.ClientRepository;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
-public class ClientService {
+public class ClientService implements UserDetailsService {
     ClientRepository clientRepository;
 
     AccountRepository accountRepository;
@@ -50,5 +55,16 @@ public class ClientService {
         Client client = getClientById(clientId);
         account.setClient(client);
         return accountRepository.save(account);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws ClientNotFoundException {
+        return clientRepository.findByEmail(email)
+                .map(client -> new User(
+                        client.getEmail(),
+                        client.getPassword(),
+                        Collections.singleton(client.getRole())
+                ))
+                .orElseThrow(() -> new UsernameNotFoundException("Failed to retrieve client: " + email));
     }
 }
